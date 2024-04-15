@@ -11,8 +11,10 @@ import {
 } from '@mui/material'
 import styles from '../page.module.css'
 import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { redirect } from 'next/navigation'
 import GoogleAccount from '../components/GoogleAccount'
+import { useSession } from 'next-auth/react'
+import Loading from '../loading'
 
 const LoginPage = () => {
   const [email, setEmail] = useState('')
@@ -20,7 +22,11 @@ const LoginPage = () => {
   const [error, setError] = useState(false)
   const [wrongCredentials, setWrongCredentials] = useState('')
 
-  const router = useRouter()
+  const { data: session, status: sessionStatus } = useSession()
+
+  if (session) {
+    redirect('/')
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -33,11 +39,11 @@ const LoginPage = () => {
       })
 
       setError(false)
+
       if (response?.error) {
         setWrongCredentials('Invalid credentials')
         return
       }
-      router.push('/')
     } catch (error) {
       console.log(error)
     } finally {
@@ -45,6 +51,9 @@ const LoginPage = () => {
     }
   }
 
+  // if (sessionStatus === 'loading') {
+  //   return <Loading />
+  // }
   return (
     <div className={styles.login__container}>
       <Grid container justifyContent='center'>

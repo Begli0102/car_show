@@ -5,12 +5,16 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
 import { IUser } from '@/app/interface'
 import GoogleProvider from 'next-auth/providers/google'
+import { Account, User as AuthUser } from 'next-auth'
 
-export const authOptions = {
+export const authOptions: any = {
   providers: [
     CredentialsProvider({
       name: 'credentials',
-      credentials: {},
+      credentials: {
+        email: { label: 'Email', type: 'text' },
+        password: { label: 'Password', type: 'password' }
+      },
 
       async authorize (credentials) {
         const { email, password } = credentials as IUser
@@ -31,24 +35,51 @@ export const authOptions = {
 
           return user
         } catch (error) {
-          console.log('Error: ', error)
+          throw new Error(error)
         }
       }
     }),
     GoogleProvider({
-      clientId: process.env.CLIENT_ID as string,
-      clientSecret: process.env.CLIENT_SECRET as string
+      clientId: process.env.CLIENT_ID as a string,
+      clientSecret: process.env.CLIENT_SECRET as a string,
+      httpOptions: {
+        timeout: 10000
+      }
     })
   ],
-  session: {
-    strategy: 'jwt' as const
-  },
+  // session: {
+  //   strategy: 'jwt' as const
+  // },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: '/login'
+  },
+  callbacks: {
+    async signIn ({ user, account }: { user: AuthUser; account: Account }) {
+      if (account?.provider == 'credentials') {
+        return true
+      }
+      if (account?.provider == 'google') {
+        await mongoDB()
+        try {
+          const userExist = await User.findOne({ email: user.email })
+          if (!userExist) {
+            const newUser = new User({
+              email: user.email
+            })
+
+            await newUser.save()
+            return true
+          }
+          return true
+        } catch (err) {
+          console.log('Error saving user', err)
+          return false
+        }
+      }
+    }
   }
 }
-
 const handler = NextAuth(authOptions)
 
 export { handler as GET, handler as POST }

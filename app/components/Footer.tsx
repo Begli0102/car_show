@@ -4,6 +4,7 @@ import styles from '../page.module.css'
 import { footerLinks } from '../consonants'
 import Link from 'next/link'
 import { Grid, Typography } from '@mui/material'
+import carLogo from '../../public/car-logo.svg'
 
 const Footer = () => {
   return (
@@ -11,7 +12,7 @@ const Footer = () => {
       <Grid container spacing={2} className={styles.footer__logo__links}>
         <Grid item xs={12} md={4} className={styles.footer__logo}>
           <Image
-            src='/4ydEzuq5aFVUjXdvHLripG-7eb7ed609239464291ac4b2f1dac2927-autoscout24redesign23-1100.png'
+            src={carLogo}
             alt='logo'
             width={118}
             height={38}

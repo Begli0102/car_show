@@ -4,17 +4,20 @@ import Image from 'next/image'
 import { Button, Box, Typography } from '@mui/material'
 import GoogleLogo from '../../public/google-logo.png'
 import styles from '../page.module.css'
-import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { signIn, useSession } from 'next-auth/react'
+import { redirect } from 'next/navigation'
 
 const GoogleAccount = () => {
-  const router = useRouter()
-
+  const { data: session } = useSession()
+  if (session) {
+    redirect('/')
+  }
   // const handleSignInClick = async () => {
   //   try {
-  //     await signIn('google')
-
-  //     router.push('/')
+  //     const response = await signIn('google')
+  //     if (response?.ok) {
+  //       redirect('/')
+  //     }
   //   } catch (error) {
   //     // Handle unexpected errors
   //     console.error('Error signing in with Google:', error)
