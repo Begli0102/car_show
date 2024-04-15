@@ -34,14 +34,14 @@ export const authOptions: any = {
           }
 
           return user
-        } catch (error) {
+        } catch (error:any) {
           throw new Error(error)
         }
       }
     }),
     GoogleProvider({
-      clientId: process.env.CLIENT_ID as a string,
-      clientSecret: process.env.CLIENT_SECRET as a string,
+      clientId: process.env.CLIENT_ID as string,
+      clientSecret: process.env.CLIENT_SECRET as string,
       httpOptions: {
         timeout: 10000
       }
