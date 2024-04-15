@@ -13,9 +13,12 @@ import styles from '../page.module.css'
 import { useRouter } from 'next/navigation'
 
 const SignupPage = () => {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [user, setUser] = useState({
+    name: '',
+    email: '',
+    password: ''
+  })
+
   const [error, setError] = useState(false)
   const [userExist, setUserExist] = useState('')
 
@@ -23,48 +26,40 @@ const SignupPage = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    setError(false)
 
     try {
-      const userExist = await fetch('/api/userExist', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email
-        })
-      })
-
-      const { user } = await userExist.json()
-
-      if (user) {
-        setUserExist('This email exist')
-        return
-      }
-      setError(false)
-
       const response = await fetch('/api/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          name,
-          email,
-          password
+          name: user.name,
+          email: user.email,
+          password: user.password
         })
       })
-      if (response.ok) {
-        const form = event.target as HTMLFormElement
-        form.reset()
-        router.push('/login')
+      if (!response.ok) {
+        const errorMessage = await response.json()
+        setUserExist(errorMessage.message)
+        return
       }
+
+      const form = event.target as HTMLFormElement
+      form.reset()
+      router.push('/login')
     } catch (error) {
-      console.log(error)
+      console.error('An error occurred:', error)
     } finally {
       setError(true)
     }
   }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUser({ ...user, [e.target.name]: e.target.value })
+  }
+
   return (
     <div className={styles.signup__container}>
       <Grid container justifyContent='center'>
@@ -85,10 +80,11 @@ const SignupPage = () => {
                     label='Full name'
                     variant='outlined'
                     size='small'
+                    name='name'
                     fullWidth
-                    onChange={e => setName(e.target.value)}
-                    error={error && !name}
-                    helperText={error && !name && 'Please enter name'}
+                    onChange={handleChange}
+                    error={error && !user.name}
+                    helperText={error && !user.name && 'Please enter name'}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -96,10 +92,11 @@ const SignupPage = () => {
                     label='Email'
                     variant='outlined'
                     size='small'
+                    name='email'
                     fullWidth
-                    onChange={e => setEmail(e.target.value)}
-                    error={error && !email}
-                    helperText={error && !email && 'Please enter email'}
+                    onChange={handleChange}
+                    error={error && !user.email}
+                    helperText={error && !user.email && 'Please enter email'}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -107,11 +104,14 @@ const SignupPage = () => {
                     label='Password'
                     type='password'
                     variant='outlined'
+                    name='password'
                     fullWidth
                     size='small'
-                    onChange={e => setPassword(e.target.value)}
-                    error={error && !password}
-                    helperText={error && !password && 'Please enter password'}
+                    onChange={handleChange}
+                    error={error && !user.password}
+                    helperText={
+                      error && !user.password && 'Please enter password'
+                    }
                   />
                 </Grid>
                 <Grid item xs={12}>

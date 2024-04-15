@@ -18,7 +18,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(false)
-  const [wrongPassword, setWrongPassword] = useState('')
+  const [wrongCredentials, setWrongCredentials] = useState('')
 
   const router = useRouter()
 
@@ -34,7 +34,7 @@ const LoginPage = () => {
 
       setError(false)
       if (response?.error) {
-        setWrongPassword('Invalid credentials')
+        setWrongCredentials('Invalid credentials')
         return
       }
       router.push('/')
@@ -44,6 +44,7 @@ const LoginPage = () => {
       setError(true)
     }
   }
+
   return (
     <div className={styles.login__container}>
       <Grid container justifyContent='center'>
@@ -52,10 +53,10 @@ const LoginPage = () => {
             <Typography variant='h5' gutterBottom>
               Sign in
             </Typography>
-            {/* <GoogleAccount /> */}
-            {wrongPassword && (
+            <GoogleAccount />
+            {wrongCredentials && (
               <Alert severity='error' sx={{ marginBottom: '10px' }}>
-                {wrongPassword}
+                {wrongCredentials}
               </Alert>
             )}
             <form onSubmit={handleSubmit}>

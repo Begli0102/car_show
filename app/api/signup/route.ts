@@ -10,6 +10,14 @@ export const POST = async (req: Request) => {
 
     await mongoDB()
 
+    const userExist = await User.findOne({ email })
+    if (userExist) {
+      return NextResponse.json(
+        { message: 'User is already exist' },
+        { status: 401 }
+      )
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10)
     await User.create({ name, email, password: hashedPassword })
 
