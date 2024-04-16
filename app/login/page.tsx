@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Button,
   Grid,
@@ -11,39 +11,47 @@ import {
 } from '@mui/material'
 import styles from '../page.module.css'
 import { signIn } from 'next-auth/react'
-import { redirect } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
 import GoogleAccount from '../components/GoogleAccount'
 import { useSession } from 'next-auth/react'
 import Loading from '../loading'
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [user, setUser] = useState({
+    email: '',
+    password: ''
+  })
+
   const [error, setError] = useState(false)
   const [wrongCredentials, setWrongCredentials] = useState('')
+  const router = useRouter()
+  const { status: sessionStatus } = useSession()
 
-  const { data: session, status: sessionStatus } = useSession()
-
-  if (session) {
-    redirect('/')
-  }
+  useEffect(() => {
+    if (sessionStatus === 'authenticated') {
+      router.replace('/')
+    }
+  }, [sessionStatus, router])
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     try {
       const response = await signIn('credentials', {
-        email,
-        password,
+        email: user.email,
+        password: user.password,
         redirect: false
       })
 
       setError(false)
-
+      console.log(response)
       if (response?.error) {
         setWrongCredentials('Invalid credentials')
         return
       }
+      const form = event.target as HTMLFormElement
+      form.reset()
+      router.push('/')
     } catch (error) {
       console.log(error)
     } finally {
@@ -54,6 +62,11 @@ const LoginPage = () => {
   // if (sessionStatus === 'loading') {
   //   return <Loading />
   // }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUser({ ...user, [e.target.name]: e.target.value })
+  }
+
   return (
     <div className={styles.login__container}>
       <Grid container justifyContent='center'>
@@ -75,10 +88,11 @@ const LoginPage = () => {
                     label='Email'
                     variant='outlined'
                     size='small'
+                    name='email'
                     fullWidth
-                    onChange={e => setEmail(e.target.value)}
-                    error={error && !email}
-                    helperText={error && !email && 'Enter the email'}
+                    onChange={handleChange}
+                    error={error && !user.email}
+                    helperText={error && !user.email && 'Enter the email'}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -86,11 +100,12 @@ const LoginPage = () => {
                     label='Password'
                     type='password'
                     variant='outlined'
+                    name='password'
                     fullWidth
                     size='small'
-                    onChange={e => setPassword(e.target.value)}
-                    error={error && !password}
-                    helperText={error && !password && 'Enter the password'}
+                    onChange={handleChange}
+                    error={error && !user.password}
+                    helperText={error && !user.password && 'Enter the password'}
                   />
                 </Grid>
                 <Grid item xs={12}>

@@ -10,7 +10,9 @@ import {
   Link
 } from '@mui/material'
 import styles from '../page.module.css'
-import { useRouter } from 'next/navigation'
+import { useRouter, redirect } from 'next/navigation'
+import { useSession } from 'next-auth/react'
+import Loading from '../loading';
 
 const SignupPage = () => {
   const [user, setUser] = useState({
@@ -21,6 +23,11 @@ const SignupPage = () => {
 
   const [error, setError] = useState(false)
   const [userExist, setUserExist] = useState('')
+  const { data: session, status: sessionStatus } = useSession()
+
+  if (session) {
+    redirect('/')
+  }
 
   const router = useRouter()
 
@@ -58,6 +65,10 @@ const SignupPage = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser({ ...user, [e.target.name]: e.target.value })
+  }
+
+  if (sessionStatus === 'loading') {
+    return <Loading />
   }
 
   return (

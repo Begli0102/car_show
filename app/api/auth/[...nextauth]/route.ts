@@ -11,10 +11,7 @@ export const authOptions: any = {
   providers: [
     CredentialsProvider({
       name: 'credentials',
-      credentials: {
-        email: { label: 'Email', type: 'text' },
-        password: { label: 'Password', type: 'password' }
-      },
+      credentials: {},
 
       async authorize (credentials) {
         const { email, password } = credentials as IUser
@@ -41,15 +38,12 @@ export const authOptions: any = {
     }),
     GoogleProvider({
       clientId: process.env.CLIENT_ID as string,
-      clientSecret: process.env.CLIENT_SECRET as string,
-      httpOptions: {
-        timeout: 10000
-      }
+      clientSecret: process.env.CLIENT_SECRET as string
     })
   ],
-  // session: {
-  //   strategy: 'jwt' as const
-  // },
+  session: {
+    strategy: 'jwt' as const
+  },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: '/login'
