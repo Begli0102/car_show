@@ -31,8 +31,8 @@ export const authOptions: any = {
           }
 
           return user
-        } catch (error:any) {
-          throw new Error(error)
+        } catch (error) {
+          console.log(error)
         }
       }
     }),
@@ -59,6 +59,7 @@ export const authOptions: any = {
           const userExist = await User.findOne({ email: user.email })
           if (!userExist) {
             const newUser = new User({
+              name: user.name,
               email: user.email
             })
 

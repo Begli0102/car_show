@@ -11,10 +11,9 @@ import {
 } from '@mui/material'
 import styles from '../page.module.css'
 import { signIn } from 'next-auth/react'
-import { redirect, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import GoogleAccount from '../components/GoogleAccount'
 import { useSession } from 'next-auth/react'
-import Loading from '../loading'
 
 const LoginPage = () => {
   const [user, setUser] = useState({
@@ -51,17 +50,13 @@ const LoginPage = () => {
       }
       const form = event.target as HTMLFormElement
       form.reset()
-      router.push('/')
+      router.replace('/')
     } catch (error) {
       console.log(error)
     } finally {
       setError(true)
     }
   }
-
-  // if (sessionStatus === 'loading') {
-  //   return <Loading />
-  // }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser({ ...user, [e.target.name]: e.target.value })
