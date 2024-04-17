@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
   Button,
   Grid,
@@ -24,13 +24,6 @@ const LoginPage = () => {
   const [error, setError] = useState(false)
   const [wrongCredentials, setWrongCredentials] = useState('')
   const router = useRouter()
-  const { status: sessionStatus } = useSession()
-
-  useEffect(() => {
-    if (sessionStatus === 'authenticated') {
-      router.replace('/')
-    }
-  }, [sessionStatus, router])
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -41,16 +34,19 @@ const LoginPage = () => {
         password: user.password,
         redirect: false
       })
+      console.log(response)
+
+      if (response?.ok) {
+        const form = event.target as HTMLFormElement
+        form.reset()
+        router.replace('/')
+      }
 
       setError(false)
-      console.log(response)
       if (response?.error) {
         setWrongCredentials('Invalid credentials')
         return
       }
-      const form = event.target as HTMLFormElement
-      form.reset()
-      router.replace('/')
     } catch (error) {
       console.log(error)
     } finally {

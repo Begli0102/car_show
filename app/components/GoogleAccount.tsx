@@ -1,18 +1,32 @@
 'use client'
-import React from 'react'
+import React, { useEffect } from 'react'
 import Image from 'next/image'
 import { Button, Box, Typography } from '@mui/material'
 import GoogleLogo from '../../public/google-logo.png'
 import styles from '../page.module.css'
-import { signIn } from 'next-auth/react'
-import { redirect } from 'next/navigation'
+import { signIn, useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 const GoogleAccount = () => {
+  const router = useRouter()
+
+  const { status: sessionStatus } = useSession()
+
+  useEffect(() => {
+    if (sessionStatus === 'authenticated') {
+      router.replace('/')
+    }
+  }, [sessionStatus, router])
+
   const handleSignInClick = async () => {
     try {
-      const response = await signIn('google')
+      const response = await signIn('google', {
+        callbackUrl: '/',
+        redirect: true
+      })
+
       if (response?.ok) {
-        redirect('/')
+        router.replace('/')
       }
     } catch (error) {
       // Handle unexpected errors
