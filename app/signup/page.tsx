@@ -12,7 +12,7 @@ import {
 import styles from '../page.module.css'
 import { useRouter, redirect } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import Loading from '../loading';
+import Loading from '../loading'
 
 const SignupPage = () => {
   const [user, setUser] = useState({
@@ -42,9 +42,7 @@ const SignupPage = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          name: user.name,
-          email: user.email,
-          password: user.password
+          user
         })
       })
       if (!response.ok) {

@@ -30,8 +30,7 @@ const LoginPage = () => {
 
     try {
       const response = await signIn('credentials', {
-        email: user.email,
-        password: user.password,
+        user,
         redirect: false
       })
       console.log(response)
