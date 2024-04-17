@@ -38,7 +38,10 @@ export const authOptions: any = {
     }),
     GoogleProvider({
       clientId: process.env.CLIENT_ID as string,
-      clientSecret: process.env.CLIENT_SECRET as string
+      clientSecret: process.env.CLIENT_SECRET as string,
+      httpOptions: {
+        timeout: 10000,
+      }
     })
   ],
   session: {

@@ -14,14 +14,14 @@ export const POST = async (req: Request) => {
     if (userExist) {
       return NextResponse.json(
         { message: 'User is already exist' },
-        { status: 401 }
+        { status: 400 }
       )
     }
 
     const hashedPassword = await bcrypt.hash(password, 10)
     await User.create({ name, email, password: hashedPassword })
 
-    return NextResponse.json({ message: 'User registered' }, { status: 201 })
+    return NextResponse.json({ message: 'User registered' }, { status: 200 })
   } catch (error) {
     return NextResponse.json(
       { message: 'An error occured while signing up' },
