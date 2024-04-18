@@ -55,17 +55,15 @@ const SignupPage = () => {
       if (!response.ok) {
         const errorMessage = await response.json()
         setUserExist(errorMessage.message)
+        setError(true)
         return
       }
 
-      if (response?.ok) {
-        const form = event.target as HTMLFormElement
-        form.reset()
-        router.replace('/login')
-      }
+      const form = event.target as HTMLFormElement
+      form.reset()
+      router.replace('/login')
     } catch (error) {
       console.error('An error occurred:', error)
-    } finally {
       setError(true)
     }
   }
