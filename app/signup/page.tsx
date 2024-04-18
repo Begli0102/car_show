@@ -12,7 +12,7 @@ import {
 import styles from '../page.module.css'
 import { useRouter, redirect } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import Loading from '../loading';
+import Loading from '../loading'
 
 const SignupPage = () => {
   const [user, setUser] = useState({
@@ -23,7 +23,7 @@ const SignupPage = () => {
 
   const [error, setError] = useState(false)
   const [userExist, setUserExist] = useState('')
-  const { data: session, status: sessionStatus } = useSession()
+  const { data: session } = useSession()
 
   if (session) {
     redirect('/')
@@ -34,6 +34,10 @@ const SignupPage = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setError(false)
+
+    if (!user.name || !user.email || !user.password) {
+      return
+    }
 
     try {
       const response = await fetch('/api/signup', {
@@ -47,15 +51,18 @@ const SignupPage = () => {
           password: user.password
         })
       })
+
       if (!response.ok) {
         const errorMessage = await response.json()
         setUserExist(errorMessage.message)
         return
       }
 
-      const form = event.target as HTMLFormElement
-      form.reset()
-      router.push('/login')
+      if (response?.ok) {
+        const form = event.target as HTMLFormElement
+        form.reset()
+        router.replace('/login')
+      }
     } catch (error) {
       console.error('An error occurred:', error)
     } finally {
@@ -65,10 +72,6 @@ const SignupPage = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser({ ...user, [e.target.name]: e.target.value })
-  }
-
-  if (sessionStatus === 'loading') {
-    return <Loading />
   }
 
   return (

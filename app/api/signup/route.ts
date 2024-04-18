@@ -5,8 +5,7 @@ import bcrypt from 'bcryptjs'
 
 export const POST = async (req: Request) => {
   try {
-    const body = await req.json()
-    const { name, email, password } = body
+    const { name, email, password } = await req.json()
 
     await mongoDB()
 
