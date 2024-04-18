@@ -40,7 +40,7 @@ export const authOptions: any = {
       clientId: process.env.CLIENT_ID as string,
       clientSecret: process.env.CLIENT_SECRET as string,
       httpOptions: {
-        timeout: 10000,
+        timeout: 10000
       }
     })
   ],

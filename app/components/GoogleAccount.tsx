@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react'
 import Image from 'next/image'
 import { Button, Box, Typography } from '@mui/material'
-import GoogleLogo from '../../public/google-logo.png'
+import GoogleLogo from '../../public/google_icon.png'
 import styles from '../page.module.css'
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
