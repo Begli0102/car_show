@@ -30,9 +30,9 @@ export default async function Home ({ searchParams }: HomeProps) {
       <SearchBar />
       {!isDataEmpty ? (
         <div className={styles.result__container}>
-          {allCars.map(car => (
+          {allCars.map((car, index) => (
             <Suspense fallback={<Loading />}>
-              <CarCard car={car} />
+              <CarCard car={car} key={index} />
             </Suspense>
           ))}
           <ShowMoreOrLess
