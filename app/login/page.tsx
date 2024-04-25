@@ -25,39 +25,16 @@ const LoginPage = () => {
   const [wrongCredentials, setWrongCredentials] = useState('')
   const router = useRouter()
 
-  // const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault()
+  const { data: session } = useSession()
 
-  //   try {
-  //     const response = await signIn('credentials', {
-  //       email: user.email,
-  //       password: user.password,
-  //       redirect: false
-  //     })
-
-  //     if (response?.ok) {
-  //       const form = event.target as HTMLFormElement
-  //       form.reset()
-  //       router.replace('/')
-  //     }
-
-  //     setError(false)
-  //     if (response?.error) {
-  //       setWrongCredentials('Invalid credentials')
-  //       return
-  //     }
-  //   } catch (error) {
-  //     console.log(error)
-  //   } finally {
-  //     setError(true)
-  //   }
-  // }
+  if (session) {
+    router.replace('/')
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setError(false)
-
     if (!user.email || !user.password) {
+      setError(true)
       return
     }
 
@@ -68,17 +45,20 @@ const LoginPage = () => {
         redirect: false
       })
 
-      if (response?.status == 401) {
-        setWrongCredentials('Invalid credentials')
-        setError(true)
-        return
+      if (response?.ok) {
+        const form = event.target as HTMLFormElement
+        form.reset()
+        router.replace('/')
       }
 
-      const form = event.target as HTMLFormElement
-      form.reset()
-      router.replace('/')
+      setError(false)
+      if (response?.error) {
+        setWrongCredentials('Invalid credentials')
+        return
+      }
     } catch (error) {
-      console.error('An error occurred:', error)
+      console.log(error)
+    } finally {
       setError(true)
     }
   }

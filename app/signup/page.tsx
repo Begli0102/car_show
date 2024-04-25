@@ -12,7 +12,6 @@ import {
 import styles from '../page.module.css'
 import { useRouter, redirect } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import Loading from '../loading'
 
 const SignupPage = () => {
   const [user, setUser] = useState({
@@ -24,20 +23,21 @@ const SignupPage = () => {
   const [error, setError] = useState(false)
   const [userExist, setUserExist] = useState('')
   const { data: session } = useSession()
+  const router = useRouter()
 
   if (session) {
-    redirect('/')
+    router.replace('/')
   }
-
-  const router = useRouter()
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setError(false)
 
     if (!user.name || !user.email || !user.password) {
+      setError(true)
       return
     }
+    setError(false)
 
     try {
       const response = await fetch('/api/signup', {
@@ -51,19 +51,20 @@ const SignupPage = () => {
           password: user.password
         })
       })
-
+      if (response.ok) {
+        const form = event.target as HTMLFormElement
+        form.reset()
+        router.replace('/login')
+      }
       if (!response.ok) {
         const errorMessage = await response.json()
         setUserExist(errorMessage.message)
         setError(true)
         return
       }
-
-      const form = event.target as HTMLFormElement
-      form.reset()
-      router.replace('/login')
     } catch (error) {
       console.error('An error occurred:', error)
+    } finally {
       setError(true)
     }
   }

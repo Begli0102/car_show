@@ -48,7 +48,7 @@ const Navbar = () => {
           </Grid>
           <Grid item xs={3} md={1} lg={1}>
             <div className={styles.navbar__chip}>
-              {session?.user?.name ? (
+              {session ? (
                 <Chip
                   label='Sign out'
                   variant='outlined'
