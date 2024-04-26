@@ -44,7 +44,7 @@ const LoginPage = () => {
         password: user.password,
         redirect: false
       })
-
+      console.log(typeof response)
       if (response?.ok) {
         const form = event.target as HTMLFormElement
         form.reset()
