@@ -131,6 +131,12 @@ const LoginPage = () => {
                 </Grid>
               </Grid>
             </form>
+            <Typography gutterBottom variant='body2'>
+              <span style={{ fontWeight: 'bold' }}>Email:</span> test@gmail.com
+            </Typography>
+            <Typography gutterBottom variant='body2'>
+              <span style={{ fontWeight: 'bold' }}>Password:</span> test
+            </Typography>
           </Paper>
         </Grid>
       </Grid>
