@@ -3,10 +3,10 @@ import { CarProps, FilterProps } from '../interface'
 //** Fetching cars from an API*/
 export const fetchCars = async (filters: FilterProps) => {
   const { manufacturer, model, fuel, year, limit } = filters
-  const url = `https://cars-by-api-ninjas.p.rapidapi.com/v1/cars?make=${manufacturer}&year=${year}&model=${model}&limit=${limit}&fuel_type=${fuel}`
+  const url = `https://api.api-ninjas.com/v1/cars?model=${manufacturer}&year=${year}&model=${model}&limit=${limit}&fuel_type=${fuel}`
   const headers = {
     'X-RapidAPI-Key': process.env.NEXT_PUBLIC_CAR_MARKET || '',
-    'X-RapidAPI-Host': 'cars-by-api-ninjas.p.rapidapi.com'
+    // 'X-RapidAPI-Host': 'cars-by-api-ninjas.p.rapidapi.com'
   }
   const response = await fetch(url, { headers: headers })
   const data = await response.json()

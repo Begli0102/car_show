@@ -12,7 +12,7 @@ const ErrorComponent = () => {
           sx={{ alignItems: 'center' }}
         >
           <Typography variant='body2' gutterBottom>
-            Oops, no results
+            Oops, no results were found
           </Typography>
         </Alert>
       </Stack>
